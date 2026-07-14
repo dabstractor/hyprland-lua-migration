@@ -20,6 +20,39 @@ this document. Every old construct has a direct new equivalent shown side by
 side. Exhaustive detail (every option, every param) lives in `references/` — read
 the relevant reference whenever you need the complete list for a subsystem.
 
+## Operating procedure
+
+This skill is not just reference — it is a **procedure**. Follow it every time.
+
+### 1. Survey the whole config, then get approval before touching anything
+
+Unless the user gave a narrow, fully-specified task ("change this one bind to
+X"), treat **all of `~/.config/hypr/`** as in scope: the main `hyprland.lua` or
+`hyprland.conf`, **plus** every file it `require`s or sources. Read each file end
+to end and catalog **every** upgrade opportunity — old-syntax leftovers,
+renamed/moved/inverted/removed options (Reference 02), and the traps listed
+below.
+
+Then **stop and report — do not edit yet.** Hand back a reviewable plan grouped
+by file: for each change show the old form, the new form, and why (cite the
+specific trap or reference row). Begin converting only after the user approves.
+This survey-and-confirm loop is the default; skip it only when the instruction
+is already an explicit "go change X to Y".
+
+### 2. Verify continuously while you work
+
+Every time you change a file, reload and surface errors before moving on:
+
+```sh
+hyprctl reload && hyprctl configerrors
+```
+
+`configerrors` prints every config warning/error Hyprland found on reload. Fix
+its reports before doing anything else. Cross-check behavior by running commands
+live in the CLI — `hyprctl repl`, `hyprctl eval 'LUA'`, or `hyprctl dispatch
+'LUA'` (see Reference 01 §12). Never leave a file producing errors you haven't
+reported to the user.
+
 ## TL;DR — the shape of the change
 
 | | 0.54 (hyprlang) | 0.55 (Lua) |
@@ -59,7 +92,7 @@ the relevant reference whenever you need the complete list for a subsystem.
 15. **Fix type literals**: `yes/no/on/off/1/0` → `true/false`; quote strings; vec2 `a b` → `{a,b}`; gradient `c c 45deg` → `{colors={...}, angle=45}`.
 16. **Drop removed options** (see Reference 02 "REMOVED" rows) and **relocate moved ones** (`general.no_cursor_warps`→`cursor.no_warps`, `misc.vfr`→`debug.vfr`, `misc.no_direct_scanout`→`render.direct_scanout` inverted).
 
-Run `hyprctl reload` (or just save) and watch the error popup; fix line-by-line.
+Run `hyprctl reload && hyprctl configerrors` and fix everything it reports before moving on — see **Operating procedure** for the full loop.
 
 ## The example config, fully translated
 

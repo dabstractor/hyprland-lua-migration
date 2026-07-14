@@ -260,3 +260,4 @@ hyprctl repl           # interactive; Ctrl+D to exit
 ```
 `hyprctl eval 'LUA'` runs a Lua string and returns "ok" or the error.
 `hyprctl dispatch 'LUA'` is shorthand for `eval 'hl.dispatch(...)'`.
+`hyprctl configerrors` prints every config warning/error from the last reload — run it after `hyprctl reload` (this is the primary error-checking loop; see SKILL.md **Operating procedure**).
